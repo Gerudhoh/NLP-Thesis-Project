@@ -1,0 +1,41 @@
+1: ...
+2: If
+3: you
+4: wish
+5: to
+6: make
+7: an
+8: apple
+9: pie
+10: from
+11: scratch
+12: ,
+13: ...
+14: you
+15: must
+16: first
+17: invent
+18: the
+19: universe
+20: .
+
+1: ('...', ':')
+2: ('If', 'IN')
+3: ('you', 'PRP')
+4: ('wish', 'VBP')
+5: ('to', 'TO')
+6: ('make', 'VB')
+7: ('an', 'DT')
+8: ('apple', 'NN')
+9: ('pie', 'NN')
+10: ('from', 'IN')
+11: ('scratch', 'NN')
+12: (',', ',')
+13: ('...', ':')
+14: ('you', 'PRP')
+15: ('must', 'MD')
+16: ('first', 'VB')
+17: ('invent', 'VB')
+18: ('the', 'DT')
+19: ('universe', 'NN')
+20: ('.', '.')
