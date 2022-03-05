@@ -82,11 +82,20 @@ for index, row in p.iterrows():
         lbl = ""
         if len(entity_labels) > 0:
             lbl = max(set(entity_labels), key = entity_labels.count)
+        
+        if "health" in words.casefold():
+            lbl = "MEDICAL"
 
         named_entities.append([lbl, words])
         
 ner_frame = pd.DataFrame(named_entities, columns =['Entity', 'Plt1Name'])
 print(ner_frame.describe())   
+
+plot = ner_frame.Entity.str.split(expand=True).stack().value_counts().plot.pie()
+fig = plot.get_figure()
+fig.Position = [10, 10, 5500, 4000]
+fig.savefig('ner_pie.pdf', format='pdf', bbox_inches='tight')
+
 # plot = ner_frame.Entity.str.split(expand=True).stack().value_counts().plot(kind='bar')
 # fig = plot.get_figure()
 # fig.Position = [10, 10, 5500, 4000]
