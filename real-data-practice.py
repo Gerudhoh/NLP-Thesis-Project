@@ -92,6 +92,7 @@ ner_frame = pd.DataFrame(named_entities, columns =['Entity', 'Plt1Name'])
 print(ner_frame.describe())   
 
 plot = ner_frame.Entity.str.split(expand=True).stack().value_counts().plot.pie()
+plt.legend(ner_frame.Entity.unique(), loc="center")
 fig = plot.get_figure()
 fig.Position = [10, 10, 5500, 4000]
 fig.savefig('ner_pie.pdf', format='pdf', bbox_inches='tight')
