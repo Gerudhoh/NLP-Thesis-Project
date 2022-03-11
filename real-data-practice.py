@@ -67,7 +67,6 @@ p = data['Plt1Name'].to_frame()
 # plot.get_figure().savefig('frequency.pdf', format='pdf', bbox_inches='tight')
 
 named_entities = []
-business_words = ["LLC", "LP", "CO"]
 for index, row in p.iterrows():
     words = row['Plt1Name']
     entity_labels = []
@@ -79,7 +78,7 @@ for index, row in p.iterrows():
             if isinstance(node, nltk.Tree):
                 if(node.label() != "GPE"):
                     entity_labels.append(node.label())
-        lbl = ""
+        lbl = "NO_LABEL"
         if len(entity_labels) > 0:
             lbl = max(set(entity_labels), key = entity_labels.count)
         
@@ -89,16 +88,8 @@ for index, row in p.iterrows():
         named_entities.append([lbl, words])
         
 ner_frame = pd.DataFrame(named_entities, columns =['Entity', 'Plt1Name'])
-print(ner_frame.describe())   
-
 plot = ner_frame.Entity.str.split(expand=True).stack().value_counts().plot.pie()
-plt.legend(ner_frame.Entity.unique(), loc="center")
+plt.legend(ner_frame.Entity.value_counts().index.tolist(), loc="center")
 fig = plot.get_figure()
 fig.Position = [10, 10, 5500, 4000]
-fig.savefig('ner_pie.pdf', format='pdf', bbox_inches='tight')
-
-# plot = ner_frame.Entity.str.split(expand=True).stack().value_counts().plot(kind='bar')
-# fig = plot.get_figure()
-# fig.Position = [10, 10, 5500, 4000]
-# fig.savefig('ner.pdf', format='pdf', bbox_inches='tight')          
-                
+fig.savefig('ner_pie2.pdf', format='pdf', bbox_inches='tight')
