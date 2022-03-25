@@ -4,12 +4,17 @@ import nltk
 nltk.download('wordnet')
 nltk.download('word2vec_sample')
 import gensim
+import gensim.downloader as api
 from nltk.stem import WordNetLemmatizer
 from nltk.data import find
 word2vec_sample = str(find('models/word2vec_sample/pruned.word2vec.txt'))
 model = gensim.models.KeyedVectors.load_word2vec_format(word2vec_sample, binary=False)
+glove_model = api.load("glove-wiki-gigaword-50")
 
+glove_model.most_similar("university")
 model.most_similar(positive=['university'], topn = 15)
+
+# Word2Vec
 
 medical_terms = ["health", "medical", "hospital", "clinic"]
 medical_embeddings = set()
@@ -28,6 +33,31 @@ for embedding in medical_embeddings:
 
 medical_embeddings = lemmatized_words.difference(set(medical_terms))
 print(medical_embeddings)
+
+# GLoVe
+medical_terms = ["health", "medical", "hospital", "clinic"]
+medical_embeddings_glove = set()
+for term in medical_terms:
+    similars = glove_model.most_similar(positive=[term], topn = 11)
+    for wordembedding in similars:
+        medical_embeddings_glove.add(wordembedding[0].lower())
+        
+print(medical_embeddings_glove)
+
+lemmatizer = WordNetLemmatizer()
+lemmatized_words = set()
+for embedding in medical_embeddings_glove:
+    lemmatized = lemmatizer.lemmatize(embedding)
+    lemmatized_words.add(lemmatized)
+
+medical_embeddings_glove = lemmatized_words.difference(set(medical_terms))
+print(medical_embeddings_glove)
+
+# Combine The Two
+medical_embeddings.update(medical_embeddings_glove)
+omit_words = ["poor", "care", "nearby", "education", "study", "public", "camp", "nutrition", "environmental", "hygiene", "veterinary"]
+
+medical_embeddings = medical_embeddings.difference(set(omit_words))
 
 def determine_label(entity_labels, plaintiff_string):
     for term in medical_terms:        
