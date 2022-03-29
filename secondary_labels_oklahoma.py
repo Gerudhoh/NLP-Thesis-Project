@@ -1,4 +1,4 @@
-def determine_label(entity_labels, plaintiff_string):
+def determine_labels(entity_labels, plaintiff_string):
     for term in medical_terms:        
         if term in plaintiff_string.casefold():
             return { "primary": "MEDICAL", "secondary": term.upper() }
@@ -33,8 +33,19 @@ for index, row in p.iterrows():
                 if(node.label() != "GPE"):
                     entity_labels.append(node.label())
                     
-        lbl = determine_label(entity_labels, words)
+        lbl = determine_labels(entity_labels, words)
         named_entities.append([lbl['primary'], lbl['secondary'], words])
         
 ner_frame = pd.DataFrame(named_entities, columns =['Entity', 'Secondary Label', 'plaintiff'])
 ner_frame.Entity.value_counts()
+
+# Extract out the medical-related secondary labels
+is_medical = plaintiffs_clean["Secondary Label"] != "N/A"
+medical = plaintiffs_clean[is_medical]
+medical_embed["Secondary Label"].value_counts()
+
+# Plot the frequency ofthese labels
+plot = medical["Secondary Label"].str.split(expand=True).stack().value_counts().plot.barh()
+fig = plot.get_figure()
+fig.Position = [10, 10, 5500, 4000]
+fig.savefig('ojo_ner_pie.pdf', format='pdf', bbox_inches='tight')
