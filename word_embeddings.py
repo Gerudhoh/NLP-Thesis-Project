@@ -31,8 +31,8 @@ for embedding in medical_embeddings:
     lemmatized = lemmatizer.lemmatize(embedding)
     lemmatized_words.add(lemmatized)
 
-medical_embeddings = lemmatized_words.difference(set(medical_terms))
-print(medical_embeddings)
+medical_embeddings_w2v = lemmatized_words.difference(set(medical_terms))
+print(medical_embeddings_w2v)
 
 # GLoVe
 medical_terms = ["health", "medical", "hospital", "clinic"]
@@ -54,19 +54,33 @@ medical_embeddings_glove = lemmatized_words.difference(set(medical_terms))
 print(medical_embeddings_glove)
 
 # Combine The Two
-medical_embeddings.update(medical_embeddings_glove)
-omit_words = ["poor", "care", "nearby", "education", "study", "public", "camp", "nutrition", "environmental", "hygiene", "veterinary"]
+# medical_embeddings_w2v.update(medical_embeddings_glove)
 
-medical_embeddings = medical_embeddings.difference(set(omit_words))
+# Sanitize
+omit_words = ["poor", "care", "nearby", "education", "study", "public", "camp", "nutrition", "environmental", "hygiene", "veterinary"]
+medical_embeddings_w2v = medical_embeddings_w2v.difference(set(omit_words))
+medical_embeddings_glove = medical_embeddings_glove.difference(set(omit_words))
+
+medical_embeddings_both = medical_embeddings_glove.intersection(medical_embeddings_w2v)
+medical_embeddings_both = medical_embeddings_both.difference(set(omit_words))
+print(medical_embeddings_both)
 
 def determine_label(entity_labels, plaintiff_string):
     for term in medical_terms:        
         if term in plaintiff_string.casefold():
             return "MEDICAL"
 
-    for term in medical_embeddings:        
+    for term in medical_embeddings_both:    
         if term in plaintiff_string.casefold():
-            return "MEDICAL_EMBED"
+            return "MEDICAL_EMBED_BOTH"
+        
+    for term in medical_embeddings_w2v:        
+        if term in plaintiff_string.casefold():
+            return "MEDICAL_EMBED_W2V"
+        
+    for term in medical_embeddings_glove:   
+        if term in plaintiff_string.casefold():
+            return "MEDICAL_EMBED_GLOVE"
         
     if len(entity_labels) > 0:
         return max(set(entity_labels), key = entity_labels.count)
