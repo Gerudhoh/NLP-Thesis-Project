@@ -40,9 +40,9 @@ ner_frame = pd.DataFrame(named_entities, columns =['Entity', 'Secondary Label', 
 ner_frame.Entity.value_counts()
 
 # Extract out the medical-related secondary labels
-is_medical = plaintiffs_clean["Secondary Label"] != "N/A"
-medical = plaintiffs_clean[is_medical]
-medical_embed["Secondary Label"].value_counts()
+is_medical = ner_frame["Secondary Label"] != "N/A"
+medical = ner_frame[is_medical]
+medical["Secondary Label"].value_counts()
 
 # Plot the frequency ofthese labels
 plot = medical["Secondary Label"].str.split(expand=True).stack().value_counts().plot.barh()
