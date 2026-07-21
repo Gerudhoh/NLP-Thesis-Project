@@ -49,18 +49,38 @@ These stages are chained into a priority cascade (exact keyword → embed-both �
 
 For plaintiffs classified as medical, `scripts/get_debt.py` parses a `misc` JSON column (`Complaint Information → Amount`) to extract the actual dollar amount being claimed, and breaks totals down by provider sub-category (`AMBULANCE`, `HOSPITAL`, `NURSE`/`NURSING`).
 
+## Results (CIS4900 Final Report)
+
+Per the final report (`Julia Hohenadel 4900 Final Report W22.pdf`), the CIS4900 course was initially given four Civil Justice Data Commons datasets — Philadelphia, Maricopa County (AZ), Oklahoma, and Maryland — but Philadelphia and Maricopa turned out to be **eviction-only** data, which doesn't bear on medical debt. So the paper's actual medical-classification results are drawn only from **Oklahoma** (762,511 rows) and **Maryland** (32,534 rows, parsed from nested plaintiff JSON):
+
+| Dataset | Basic keyword filtering | + Word embeddings (combined) |
+|---|---|---|
+| Oklahoma | 6.25% flagged `MEDICAL` | 7.11% flagged `MEDICAL` (+0.85 pts) |
+| Maryland | 7.55% flagged `MEDICAL` | 11.42% flagged `MEDICAL` (+3.72 pts) |
+
+Maryland's richer JSON (address, business name, etc., not just the plaintiff's name) consistently produces a higher flag rate than Oklahoma's plaintiff-name-only string. Of the two embedding models, **GloVe** did the heavy lifting — it alone accounts for ~85% of Oklahoma's and ~80% of Maryland's embedding-only matches, largely because GloVe's neighbor set includes the word "center," a frequent but false-positive-prone term (e.g. daycare centers getting flagged as medical).
+
 ## Sample Visualizations
 
-Rendered from the source PDFs in `pdfs/` (originally produced by the Maricopa and Oklahoma notebooks):
+The Maricopa/eviction charts below (`ner.png`, `ner_pie.png`, `ner_pie2.png`, `frequency.png`) are from early CIS4900 exploration, before the course settled on Oklahoma and Maryland as the two datasets actually relevant to medical debt. The rest are rendered from the source PDFs in `pdfs/` (Oklahoma/Maricopa notebooks) or extracted directly from the final report PDF (Maryland, and both datasets' word-frequency charts, which aren't otherwise in this repo).
+
+**Final report results — Oklahoma and Maryland (Tables VI–VIII):**
+
+| | |
+|---|---|
+| ![NER + MEDICAL split (Oklahoma)](images/Oklahoma_Medical_Info.png) | ![NER + MEDICAL split (Maryland)](images/maryland_medical_info.png) |
+| Oklahoma plaintiff classification after basic keyword filtering: mostly `ORGANIZATION`/`NO_LABEL`, with a `MEDICAL` slice. | Maryland's classification after the same basic keyword filtering — a noticeably larger `MEDICAL` slice, thanks to its richer JSON data. |
+| ![Most-flagged medical words (Oklahoma)](images/oklahoma_word_frequency.png) | ![Most-flagged medical words (Maryland)](images/maryland_word_frequency.png) |
+| Word frequency behind Oklahoma's medical flags — `health`, `hospital`, `medical` dominate, with `center` (a GloVe false-positive source) a close fourth. | Same for Maryland — `hospital`, `medical`, `center` dominate, with `center` an even larger share here due to address-based false positives. |
+
+**Early exploration — Maricopa (eviction data, excluded from final medical-debt results):**
 
 | | |
 |---|---|
 | ![NER label distribution (Maricopa)](images/ner.png) | ![NER label split, pie (Maricopa)](images/ner_pie.png) |
 | Named entity counts across ~305k Maricopa plaintiff strings — the vast majority tag as `ORGANIZATION`, a smaller share as `PERSON`. | Same data as a pie chart, with legend. |
-| ![NER + MEDICAL split (Maricopa)](images/ner_pie2.png) | ![NER + MEDICAL split (Oklahoma)](images/Oklahoma_Medical_Info.png) |
-| Maricopa entity split after basic keyword filtering adds a `MEDICAL` slice (small, next to `PERSON`/`NO_LABEL`). | The equivalent chart for the Oklahoma dataset. |
 
-There's also `pdfs/frequency.pdf` — a word-frequency distribution over lemmatized Maricopa plaintiff names — but it's not reproduced here since the x-axis labels are too dense to read at this scale.
+There's also `pdfs/frequency.pdf` / `images/frequency.png` — a word-frequency distribution over lemmatized Maricopa plaintiff names — but it's not very legible at this scale (too many x-axis labels); the Oklahoma/Maryland word-frequency charts above are the readable equivalent from the final report.
 
 ## Repository Structure
 
@@ -77,7 +97,8 @@ scripts/
 practice/
   nltk-practice.py              Early NLTK exploration (tokenizing, chunking, NER, collocations)
 
-images/                         PNG renders of the chart PDFs below, for the README
+images/                         PNG renders of the chart PDFs below, plus Oklahoma/Maryland charts
+                                 extracted directly from the final report, for the README
 
 pdfs/
   frequency.pdf, ner.pdf, ner_pie.pdf, ner_pie2.pdf,
@@ -87,6 +108,7 @@ pdfs/
 
 output.txt                      Sample tokenizer/POS-tagger output
 cis4900-w22Julia.pdf            Course syllabus
+Julia Hohenadel 4900 Final Report W22.pdf   CIS4900 final report/paper — methodology + results (see above)
 ```
 
 ## Tech Stack
