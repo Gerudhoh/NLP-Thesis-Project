@@ -4,7 +4,7 @@ Independent study research project, University of Guelph, supervised by Luiza An
 
 ## Overview
 
-This project uses real U.S. civil court data from the [Civil Justice Data Commons]([https://www.civiljusticedatacommons.org/](https://www.law.georgetown.edu/tech-institute/programs-and-initiatives/georgetown-justice-lab/civil-justice-data-commons/) (built by Georgetown Law's Massive Data Institute) to automatically classify lawsuit **plaintiffs** as **medical** or **non-medical** creditors. The goal is to support research into medical debt in the United States by identifying which civil suits are being brought by hospitals, ambulance services, clinics, and other medical providers against patients over unpaid bills — without any pre-labeled training data to work from.
+This project uses real U.S. civil court data from the [Civil Justice Data Commons](https://www.law.georgetown.edu/tech-institute/programs-and-initiatives/georgetown-justice-lab/civil-justice-data-commons/) (built by Georgetown Law's Massive Data Institute) to automatically classify lawsuit **plaintiffs** as **medical** or **non-medical** creditors. The goal is to support research into medical debt in the United States by identifying which civil suits are being brought by hospitals, ambulance services, clinics, and other medical providers against patients over unpaid bills — without any pre-labeled training data to work from.
 
 ## Research Project 1: CIS4900
 
